@@ -1,0 +1,6 @@
+# nix
+.direnv
+ 
+# pixi environments
+.pixi/*
+!.pixi/config.toml
