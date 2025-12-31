@@ -1,6 +1,9 @@
 # nix
 .direnv
  
+# python
+__pycache__
+ 
 # pixi environments
 .pixi/*
 !.pixi/config.toml
