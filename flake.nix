@@ -13,6 +13,12 @@
           name = "pixi-env";
 
           targetPkgs = pkgs: (with pkgs; [ pixi ]);
+
+          extraBwrapArgs = [
+            "--bind"
+            "/etc/stylix"
+            "/etc/stylix"
+          ];
         };
       in
       {

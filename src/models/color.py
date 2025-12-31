@@ -1,11 +1,14 @@
 from dataclasses import dataclass
 
 
-@dataclass
 class Color:
     """Store a hex value with helper methods."""
 
     value: str = ""
+
+    def __init__(self, hex_val: str) -> None:
+        self.value = hex_val if hex_val.startswith("#") else f"#{hex_val}"
+        pass
 
     @staticmethod
     def hex_to_rgb(hex_str) -> tuple[int, int, int]:

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from color import Color
+from .color import Color
 
 
 class Palette(ABC):

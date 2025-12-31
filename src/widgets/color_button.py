@@ -1,5 +1,6 @@
 import subprocess
 
+import pyperclip
 from textual.reactive import reactive
 from textual.widgets import Button
 from models.color import Color
@@ -24,7 +25,8 @@ class ColorButton(Button):
         self._apply_color_styles()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        self.notify(f"hello from {self.title}")
+        pyperclip.copy(self.hex_code)
+        self.notify(f"copied: {self.hex_code}")
 
     @staticmethod
     def _format_label(title: str, hex_code: str) -> str:

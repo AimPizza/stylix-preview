@@ -13,3 +13,4 @@ watch = "textual run --dev src/main.py"
 [dependencies]
 textual = ">=6.10.0,<7"
 textual-dev = ">=1.8.0,<2"
+pyperclip = ">=1.11.0,<2"

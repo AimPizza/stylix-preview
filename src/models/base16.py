@@ -1,9 +1,14 @@
 from typing import override
-from color import Color
+from .color import Color
 from .palette import Palette
 
 
 class Base16Palette(Palette):
+    @override
+    def __init__(self, name: str | None = None) -> None:
+        self.base = 16
+        self.name = name
+        self.colors: dict[str, Color] = {}
 
     @override
     def get_base_n_color(self, n: int) -> Color:
