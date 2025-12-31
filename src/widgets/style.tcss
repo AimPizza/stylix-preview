@@ -1,0 +1,5 @@
+ColorButton {
+    width: 1fr;
+    height: 4;
+    color: black;
+}
