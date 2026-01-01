@@ -18,6 +18,9 @@
             "--bind"
             "/etc/stylix"
             "/etc/stylix"
+            "--bind"
+            "${pkgs.base16-schemes}/share/themes"
+            "/etc/schemes/16"
           ];
         };
       in

@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Optional
 
+from constants import DEFAULT_PALETTE_PATH
 from textual.app import ComposeResult
 from textual.containers import Grid
 from textual.events import Key
@@ -14,7 +15,7 @@ class InputScreen(ModalScreen[Optional[Path]]):
     def compose(self) -> ComposeResult:
         yield Grid(
             Label("Input an absolute path to your json palette."),
-            Input(placeholder="/etc/stylix/palette.json", id="path_input"),
+            Input(placeholder=DEFAULT_PALETTE_PATH, id="path_input"),
             Button("Submit", variant="primary", id="submit"),
             Button("Cancel", id="cancel"),
             id="dialog",
