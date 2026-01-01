@@ -3,3 +3,31 @@ ColorButton {
     height: 4;
     color: black;
 }
+
+InputScreen {
+    align: center middle;
+}
+
+#dialog {
+    grid-size: 2;
+    grid-gutter: 1 2;
+    padding: 0 1;
+    width: 60;
+    height: 13;
+    border: round $foreground;
+    background: $surface;
+
+    Label,
+    Input {
+        height: auto;
+        column-span: 2;
+        width: 1fr;
+        content-align: center middle;
+    }
+
+    Button {
+        height: auto;
+        width: 1fr;
+    }
+}
+
