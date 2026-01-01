@@ -14,6 +14,25 @@ demo of the previewer running alongside a text editor:
   - passing a path as an argument: `pixi run start /etc/stylix/palette.json`
   - or by pressing `f` and typing in a valid path at runtime
 
+## pixi usage
+
+Pixi configuration lives in `pyproject.toml`.
+
+- install the environment: `pixi install`
+- run the app: `pixi run start /path/to/palette.json`
+- dev mode (css hot reload): `pixi run watch`
+
+## nix usage
+
+- run the app:
+  - `nix run`
+  - `nix run . -- /path/to/palette.json`
+- build the package:
+  - `nix build`
+  - artifacts are in `./result`
+- dev shell:
+  - `nix develop`
+
 ## uses
 
 - [Textual](https://textual.textualize.io/getting_started/) - TUI package

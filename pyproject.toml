@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stylix-preview"
+version = "0.1.0"
+description = "A TUI to inspect Stylix palettes."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "AimPizza", email = "rickomo.us@gmail.com" }]
+dependencies = [
+  "textual>=6.10.0,<7",
+  "pyperclip>=1.11.0,<2",
+  "pyyaml>=6.0.3,<7",
+]
+
+[project.optional-dependencies]
+dev = ["textual-dev>=1.8.0,<2"]
+
+[project.scripts]
+stylix-preview = "main:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+py-modules = ["main", "constants"]
+
+[tool.setuptools.package-data]
+widgets = ["*.tcss"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
+
+[tool.pixi.environments]
+default = { features = ["dev"], solve-group = "default" }
+
+[tool.pixi.tasks]
+code = "code ."
+start = "python src/main.py"
+watch = "textual run --dev src/main.py"
