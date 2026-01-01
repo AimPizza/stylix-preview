@@ -4,7 +4,7 @@ The goal of this project is to make working with [Stylix](https://nix-community.
 
 demo of the previewer running alongside a text editor:
 
-![demo](.docs/stylix-viewer-beta.gif)
+![demo](.docs/demo.gif)
 
 ## features
 
