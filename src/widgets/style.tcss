@@ -31,3 +31,16 @@ InputScreen {
     }
 }
 
+#content {
+    layout: vertical;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 1fr;
+}
+
+PaletteView {
+    width: 1fr;
+    height: auto;
+    margin: 1 0;
+}
+

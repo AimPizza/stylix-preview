@@ -1,0 +1,3 @@
+- make screen class out of palette_list
+- use checkboxes
+- improve palette_view to have individual title and header

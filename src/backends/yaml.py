@@ -19,8 +19,8 @@ class YamlBackend(PaletteBackend, Generic[P]):
     value: P
 
     @override
-    def __init__(self, path: str, palette_factory: Callable[[], P]) -> None:
-        self.path = Path(path)
+    def __init__(self, path: Path, palette_factory: Callable[[], P]) -> None:
+        self.path = path
         self.value = palette_factory()
         self._load()
 

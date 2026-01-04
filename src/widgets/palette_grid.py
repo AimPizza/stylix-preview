@@ -1,7 +1,7 @@
 from textual.widget import Widget
 
 
-class HomeGrid(Widget):
+class PaletteGrid(Widget):
     """Container for the layout of the homescreen."""
 
     COL_COUNT = 4

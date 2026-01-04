@@ -4,7 +4,7 @@ from typing import Optional
 
 from textual import events
 from textual.app import App, ComposeResult
-from textual.containers import Container
+from textual.containers import Container, VerticalScroll
 from textual.reactive import reactive
 from textual.widgets import Footer, Header, Label
 
@@ -13,124 +13,123 @@ from backends.yaml import YamlBackend
 from constants import DEFAULT_PALETTE_PATH
 from models.base16 import Base16Palette
 from models.palette import Palette
+from widgets.palette_view import PaletteView
 from widgets.color_button import ColorButton
-from widgets.home_grid import HomeGrid
+from widgets.palette_grid import PaletteGrid
 from widgets.input_screen import InputScreen
+from widgets.palette_list import PaletteChosen, PaletteList
 
 
 class StylixViewer(App):
     """A Textual app to inspect Stylix palettes."""
 
-    palette: Optional[Palette] = None
-    palette_file_path = reactive(Path(DEFAULT_PALETTE_PATH))
-
     CSS_PATH = "widgets/style.tcss"
+    palette_file_path = reactive(Path(DEFAULT_PALETTE_PATH))
+    """Path to either a single palette or a directory"""
 
-    BINDINGS = [("q", "quit", "Quit"), ("f", "open_input", "Pick palette path")]
+    BINDINGS = [
+        ("q", "quit", "Quit"),
+        ("f", "open_input", "Pick palette path"),
+        ("b", "back_to_list", "Back"),
+    ]
 
     def __init__(self, palette_path: str, **kwargs):
         super().__init__(**kwargs)
-        self._suppress_palette_watch = False
-
-        self._last_palette_error: Optional[str] = None
-        self._last_failed_palette_path: Optional[Path] = None
-
         self.palette_file_path = Path(palette_path)
-
-    def _load_palette(self, path: Path) -> Palette:
-        """Load a palette from `path` using the correct backend based on extension."""
-        path = path.expanduser()
-
-        if not path.exists() or not path.is_file():
-            raise FileNotFoundError(f"Palette file not found: {path.as_posix()}")
-
-        ext = path.suffix.lower()
-        if ext == ".json":
-            backend = JsonBackend(path.as_posix(), palette_factory=Base16Palette)
-            return backend.value
-
-        if ext in {".yml", ".yaml"}:
-            backend = YamlBackend(path.as_posix(), palette_factory=Base16Palette)
-            return backend.value
-
-        raise ValueError(f"Unsupported palette file type: {ext} ({path.as_posix()})")
-
-    def compose(self) -> ComposeResult:
-        yield Header()
-        yield Container(id="content")
-        yield Footer(show_command_palette=False)
+        self._last_dir_paths: list[Path] = []
 
     def on_mount(self) -> None:
-        self._render_content()
+        self.load_palettes()
 
     def update_title(self) -> None:
-        self.title = f"{self.__class__.__name__} - {self.palette_file_path.as_posix()}"
+        self.title = f"{self.__class__.__name__} - {self.palette_file_path}"
+
+    def _parse_paths(self, recursive: bool = False) -> list[Path]:
+        """Get a list of palette files from the configured path."""
+        p = self.palette_file_path
+        if not p.exists():
+            self.notify(f"Invalid path: {self.palette_file_path}", severity="error")
+            return []
+
+        def is_palette_file(f: Path) -> bool:
+            return f.is_file() and f.suffix.lower() in {".json", ".yml", ".yaml"}
+
+        if p.is_file():
+            return [p] if is_palette_file(p) else []
+        else:
+            files = p.rglob("*") if recursive else p.iterdir()
+            return [f for f in files if is_palette_file(f)]
 
     def _clear_content(self) -> None:
-        content = self.query_one("#content", Container)
-        for child in list(content.children):
+        content = self.query_one("#content", VerticalScroll)
+        for child in content.children:
             child.remove()
 
-    def _render_content(self) -> None:
-        """Mount either the error label or a fresh HomeGrid based on current palette."""
-        self.update_title()
+    def clear_and_get_content(self) -> VerticalScroll:
         self._clear_content()
+        return self.query_one("#content", VerticalScroll)
 
-        content = self.query_one("#content", Container)
+    def load_palettes(self) -> None:
+        """Checks the palette path and renders content."""
+        file_paths: list[Path] = self._parse_paths()
 
-        if self.palette is None:
-            failed_path = self._last_failed_palette_path or self.palette_file_path
-            details = self._last_palette_error or "Unknown error"
-            content.mount(
-                Label(
-                    "Couldn't load palette from: "
-                    f"{failed_path.as_posix()}\n\n{details}"
-                )
-            )
+        clean_content = self.clear_and_get_content()
+
+        if self.palette_file_path.is_dir():
+            self._last_dir_paths = sorted(file_paths)
+            if not self._last_dir_paths:
+                clean_content.mount(Label("No palette files found in directory."))
+                return
+            clean_content.mount(PaletteList(self._last_dir_paths))
             return
 
-        grid = HomeGrid()
-        content.mount(grid)
-
-        for title, color in self.palette.colors.items():
-            grid.mount(ColorButton(title=title, hex_code=color.value))
-
-    def watch_palette_file_path(self, old_path: Path, new_path: Path) -> None:
-        if self._suppress_palette_watch:
+        # File mode: render the single palette.
+        if not file_paths:
+            clean_content.mount(Label("No palette file selected."))
             return
 
+        p = file_paths[0]
         try:
-            self.palette = self._load_palette(new_path)
+            clean_content.mount(PaletteView(palette_path=p))
         except Exception as e:
-            self.palette = None
-            self._last_failed_palette_path = new_path
-            self._last_palette_error = str(e)
+            self.notify(f"Failed to load palette from: {p}\n{e}", severity="error")
 
-            if self.is_running:
-                self.notify(self._last_palette_error, severity="error")
-                self._render_content()
-
-            return
-
-        self._last_failed_palette_path = None
-        self._last_palette_error = None
-
-        if self.is_running:
-            self._render_content()
+    # ACTIONS
 
     def _on_palette_path_chosen(self, result: Optional[Path]) -> None:
+        """Handle optional path chosen by InputScreen"""
         if result is not None:
             self.palette_file_path = result
 
-    def _focus_move(self, steps: int, *, forward: bool) -> None:
+    def action_open_input(self):
+        self.push_screen(InputScreen(), callback=self._on_palette_path_chosen)
+
+    def on_palette_chosen(self, message: PaletteChosen) -> None:
+        """Handle selection from PaletteList."""
+        content = self.clear_and_get_content()
+        try:
+            content.mount(PaletteView(palette_path=message.path))
+        except Exception as e:
+            self.notify(
+                f"Failed to load palette from: {message.path}\n{e}", severity="error"
+            )
+
+    def action_back_to_list(self) -> None:
+        """Back to directory list if we came from a directory."""
+        if self.palette_file_path.is_dir():
+            self.load_palettes()
+
+    # NAVIGATION
+
+    def _focus_move(self, steps: int = 1, *, forward: bool = True) -> None:
+        """Move focus on view by n steps.
+
+        Defaults to 1 step forward."""
         for _ in range(steps):
             if forward:
                 self.screen.focus_next(ColorButton)
             else:
                 self.screen.focus_previous(ColorButton)
-
-    def action_open_input(self):
-        self.push_screen(InputScreen(), callback=self._on_palette_path_chosen)
 
     def on_key(self, event: events.Key) -> None:
         match event.key:
@@ -139,9 +138,14 @@ class StylixViewer(App):
             case "h":
                 self._focus_move(1, forward=False)
             case "j":
-                self._focus_move(HomeGrid.COL_COUNT, forward=True)
+                self._focus_move(PaletteGrid.COL_COUNT, forward=True)
             case "k":
-                self._focus_move(HomeGrid.COL_COUNT, forward=False)
+                self._focus_move(PaletteGrid.COL_COUNT, forward=False)
+
+    def compose(self) -> ComposeResult:
+        yield Header()
+        yield VerticalScroll(id="content")
+        yield Footer(show_command_palette=False)
 
 
 def main():
