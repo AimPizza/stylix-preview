@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["textual-dev>=1.8.0,<2", "ruff>=0.14.10,<0.15"]
+dev = ["textual-dev>=1.8.0,<2", "ruff>=0.14.10,<0.15", "black>=25.12.0,<26"]
 
 [project.scripts]
 stylix-preview = "main:main"
@@ -47,3 +47,6 @@ code = "code ."
 start = "python src/main.py"
 watch = "textual run --dev src/main.py"
 lint = "ruff check"
+
+[tool.black]
+line-length = 90

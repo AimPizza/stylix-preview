@@ -4,7 +4,7 @@ from typing import Generic, TypeVar, override
 from models.color import Color
 from models.palette import Palette
 
-from .palette_backend import PaletteBackend
+from .palette_backend import PaletteBackend, ThemeSchema
 from pathlib import Path
 import yaml
 
@@ -31,7 +31,7 @@ class YamlBackend(PaletteBackend, Generic[P]):
 
         try:
             with open(self.path, "r") as file:
-                palette_raw = yaml.safe_load(file)
+                palette_raw: ThemeSchema = yaml.safe_load(file)
                 print(palette_raw)
 
             if not isinstance(palette_raw, dict):
@@ -46,6 +46,7 @@ class YamlBackend(PaletteBackend, Generic[P]):
                     self.value.set_base_n_color(
                         int(key[-2:], 16), color=Color(hex_val=val)
                     )
+            self.load_title(palette_raw)
 
         except Exception as e:
             raise IOError("Failed to read yaml palette") from e

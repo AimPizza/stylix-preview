@@ -12,5 +12,8 @@
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
     "terminal.integrated.stickyScroll.enabled": false,
-    "editor.fontSize": 16
+    "editor.fontSize": 16,
+    "black-formatter.path": [
+        ".pixi/envs/default/bin/black"
+    ],
 }

@@ -34,6 +34,20 @@ class PaletteView(Container):
             return YamlBackend(path, palette_factory=Base16Palette).value
         raise ValueError(f"Unsupported palette file type: {ext} ({path})")
 
+    def render_title(self):
+        """Set title on the widget if any fields are available."""
+
+        name = getattr(self.palette, "name", None)
+        author = getattr(self.palette, "author", None)
+
+        parts: list[str] = []
+        if name:
+            parts.append(f"Name: {name}")
+        if author:
+            parts.append(f"Author: {author}")
+
+        self.border_title = ", ".join(parts)
+
     async def render_content(self) -> None:
         if self.palette is None:
             raise ValueError("Failed to load content. No palette.")
@@ -43,6 +57,8 @@ class PaletteView(Container):
 
         grid = PaletteGrid()
         await content.mount(grid)
+
+        self.render_title()
 
         buttons = [
             ColorButton(title=title, hex_code=color.value)
@@ -55,7 +71,7 @@ class PaletteView(Container):
             self.palette = self._load_palette(self.file_path)
             await self.render_content()
         except Exception as e:
-            self.notify(str(e))
+            self.notify("mounting palette view failed: " + str(e), severity="error")
             self.remove()
 
     def compose(self) -> ComposeResult:

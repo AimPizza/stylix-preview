@@ -4,7 +4,7 @@ from typing import Generic, TypeVar, override
 from models.color import Color
 from models.palette import Palette
 
-from .palette_backend import PaletteBackend
+from .palette_backend import PaletteBackend, ThemeSchema
 from pathlib import Path
 import json
 
@@ -30,14 +30,14 @@ class JsonBackend(PaletteBackend, Generic[P]):
 
         try:
             with open(self.path, "r") as file:
-                palette_raw: dict[str, str] = json.load(file)
+                palette_raw: ThemeSchema = json.load(file)
         except Exception as e:
             raise IOError("Failed to read json palette") from e
 
         for key, val in palette_raw.items():
-            if key.startswith("base"):
+            if key.startswith("base") and isinstance(val, str):
                 self.value.set_base_n_color(int(key[-2:], 16), color=Color(hex_val=val))
-        # self.load_title(palette_raw)
+        self.load_title(palette_raw)
 
     @override
     def __init__(self, path: Path, palette_factory: Callable[[], P]) -> None:

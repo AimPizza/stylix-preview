@@ -22,7 +22,7 @@ class PaletteTheme(FlatTheme):
     palette: Mapping[str, str]
 
 
-ThemeDict = FlatTheme | PaletteTheme
+ThemeSchema = FlatTheme | PaletteTheme
 """Provide fields a scheme can have.
 
 Additionally, there are str, str bindings for the color values."""
@@ -39,15 +39,20 @@ class PaletteBackend(ABC):
         """
         raise NotImplementedError
 
-    def load_title(
-        self,
-    ) -> None:
+    def load_title(self, raw: ThemeSchema) -> None:
         """Generate a palette title.
 
         Title can come from:
         - palette
-        - filename"""
-        raise NotImplementedError
+        - filename
+        """
+        if raw.get("name"):
+            self.value.name = raw.get("name")
+        elif raw.get("scheme"):
+            self.value.name = raw.get("scheme")
+
+        if raw.get("author"):
+            self.value.author = raw.get("author")
 
     def __init__(self) -> None:
         self._load()
