@@ -9,6 +9,7 @@ class Palette(ABC):
 
     base: int
     name: Optional[str]
+    author: Optional[str]
     colors: dict[str, Color]
 
     @abstractmethod
@@ -19,7 +20,7 @@ class Palette(ABC):
 
         :param int n: base index
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     @abstractmethod
     def set_base_n_color(self, n: int, color: Color) -> None:
@@ -30,4 +31,4 @@ class Palette(ABC):
         :param int n: base index
         :param Color color: color to set
         """
-        raise NotImplemented
+        raise NotImplementedError

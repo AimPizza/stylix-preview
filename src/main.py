@@ -4,15 +4,11 @@ from typing import Optional
 
 from textual import events
 from textual.app import App, ComposeResult
-from textual.containers import Container, VerticalScroll
+from textual.containers import VerticalScroll
 from textual.reactive import reactive
 from textual.widgets import Footer, Header, Label
 
-from backends.json import JsonBackend
-from backends.yaml import YamlBackend
 from constants import DEFAULT_PALETTE_PATH
-from models.base16 import Base16Palette
-from models.palette import Palette
 from widgets.palette_view import PaletteView
 from widgets.color_button import ColorButton
 from widgets.palette_grid import PaletteGrid

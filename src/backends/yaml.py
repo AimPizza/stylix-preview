@@ -32,6 +32,7 @@ class YamlBackend(PaletteBackend, Generic[P]):
         try:
             with open(self.path, "r") as file:
                 palette_raw = yaml.safe_load(file)
+                print(palette_raw)
 
             if not isinstance(palette_raw, dict):
                 raise IOError("Invalid yaml palette: expected a mapping at the root")

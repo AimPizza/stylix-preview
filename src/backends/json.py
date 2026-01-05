@@ -13,16 +13,15 @@ P = TypeVar("P", bound=Palette)
 
 
 class JsonBackend(PaletteBackend, Generic[P]):
-    """Loads a palette from a JSON file with keys like 'base00'..'base0F'."""
+    """Loads a palette from a JSON file with keys like 'base00'..'base0F'.
+
+    References:
+    - https://github.com/tinted-theming/base16-jetbrains/blob/main/ide-themes/base16-eva.theme.json
+    - https://github.com/nix-community/stylix/blob/master/stylix/palette.json.mustache
+    """
 
     path: Path
     value: P
-
-    @override
-    def __init__(self, path: Path, palette_factory: Callable[[], P]) -> None:
-        self.path = path
-        self.value = palette_factory()
-        self._load()
 
     @override
     def _load(self) -> None:
@@ -38,3 +37,10 @@ class JsonBackend(PaletteBackend, Generic[P]):
         for key, val in palette_raw.items():
             if key.startswith("base"):
                 self.value.set_base_n_color(int(key[-2:], 16), color=Color(hex_val=val))
+        # self.load_title(palette_raw)
+
+    @override
+    def __init__(self, path: Path, palette_factory: Callable[[], P]) -> None:
+        self.path = path
+        self.value = palette_factory()
+        self._load()

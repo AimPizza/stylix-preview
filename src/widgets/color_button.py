@@ -1,4 +1,3 @@
-import subprocess
 
 import pyperclip
 from textual.reactive import reactive
