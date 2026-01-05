@@ -32,7 +32,6 @@
 
           src = ./.;
 
-          # Runtime deps from pixi.toml -> pyproject.toml
           propagatedBuildInputs = with pyPkgs; [
             textual
             pyperclip
@@ -44,11 +43,9 @@
             wheel
           ];
 
-          # If you later add tests, you can enable them here.
+          # no tests rn
           doCheck = false;
 
-          # Keep your existing bind-mount expectations available as env vars if desired,
-          # but the binds themselves are usually a dev-shell concern, not a build concern.
           meta = with pkgs.lib; {
             description = "A Textual app to inspect Stylix palettes.";
             license = licenses.mit; # change if different

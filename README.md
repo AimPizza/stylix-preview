@@ -14,7 +14,9 @@ demo of the previewer running alongside a text editor:
   - passing a path as an argument: `pixi run start /etc/stylix/palette.json`
   - or by pressing `f` and typing in a valid path at runtime
 
-## pixi usage
+## usage
+
+### pixi
 
 Pixi configuration lives in `pyproject.toml`.
 
@@ -22,7 +24,7 @@ Pixi configuration lives in `pyproject.toml`.
 - run the app: `pixi run start /path/to/palette.json`
 - dev mode (css hot reload): `pixi run watch`
 
-## nix usage
+### nix
 
 - run the app:
   - `nix run`
@@ -33,21 +35,10 @@ Pixi configuration lives in `pyproject.toml`.
 - dev shell:
   - `nix develop`
 
-## uses
+## resources
 
 - [Textual](https://textual.textualize.io/getting_started/) - TUI package
 - [Pixi](https://pixi.prefix.dev) - Python package manager
 - of course, [Nix flakes](https://wiki.nixos.org/wiki/Flakes#Development_shells) - reproducible dev shell
-
-## ideas, todos
-
-- [x] package the tool into single executable
-  - nix flake available
-- rework palette models so the `base` concept is required and the actual values are dynamic -> no differentiation between base16 and base24 is needed
-- add a help page on key `?`
-- add title, author etc if availble in the file
-- list multiple palettes from directory
-  - allow recursive descent in InputScreen
-- improve vim bindings
-  - count before actions
-  - switching between palettes
+- [Tinted Theming](https://github.com/tinted-theming) / OG [chriskempson/base16](https://github.com/chriskempson/base16)
+  - specification: https://github.com/tinted-theming/home/blob/main/builder.md#schemes
