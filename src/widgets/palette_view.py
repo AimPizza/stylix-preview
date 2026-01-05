@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Optional
 
 from textual.app import ComposeResult
 from textual.containers import Container
@@ -16,7 +15,7 @@ from widgets.palette_grid import PaletteGrid
 class PaletteView(Container):
     """Display a grid of a given color palette."""
 
-    palette: Optional[Palette] = None
+    palette: Palette | None = None
     file_path = Path(DEFAULT_PALETTE_PATH)
 
     # Use a class selector so multiple PaletteViews can coexist.

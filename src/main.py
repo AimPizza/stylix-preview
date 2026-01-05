@@ -1,6 +1,5 @@
 import sys
 from pathlib import Path
-from typing import Optional
 
 from textual import events
 from textual.app import App, ComposeResult
@@ -92,7 +91,7 @@ class StylixViewer(App):
 
     # ACTIONS
 
-    def _on_palette_path_chosen(self, result: Optional[Path]) -> None:
+    def _on_palette_path_chosen(self, result: Path | None) -> None:
         """Handle optional path chosen by InputScreen"""
         if result is not None:
             self.palette_file_path = result

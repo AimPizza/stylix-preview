@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from .color import Color
 
@@ -8,8 +7,8 @@ class Palette(ABC):
     """Unspecified n base palette."""
 
     base: int
-    name: Optional[str]
-    author: Optional[str]
+    name: str | None
+    author: str | None
     colors: dict[str, Color]
 
     @abstractmethod

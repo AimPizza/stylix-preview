@@ -1,5 +1,7 @@
 {
     "recommendations": [
-        "textualize.textual-syntax-highlighter"
+        "textualize.textual-syntax-highlighter",
+        "charliermarsh.ruff",
+        "jannchie.ruff-ignore-explainer"
     ]
 }

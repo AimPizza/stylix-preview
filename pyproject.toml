@@ -32,6 +32,8 @@ widgets = ["*.tcss"]
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.ruff.lint]
+extend-select = ["UP045"]
 
 [tool.pixi.workspace]
 channels = ["conda-forge"]

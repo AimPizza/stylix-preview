@@ -21,7 +21,7 @@ class InputScreen(ModalScreen[Optional[Path]]):
             id="dialog",
         )
 
-    def _get_path(self) -> Optional[Path]:
+    def _get_path(self) -> Path | None:
         value = self.query_one("#path_input", Input).value.strip()
         if not value:
             return None
